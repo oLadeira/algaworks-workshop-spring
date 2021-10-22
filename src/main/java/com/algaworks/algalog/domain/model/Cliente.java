@@ -3,8 +3,8 @@ package com.algaworks.algalog.domain.model;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
-@Getter
+@Setter //Lombok
+@Getter //Lombok
 public class Cliente {
 	
 	private Long id;
