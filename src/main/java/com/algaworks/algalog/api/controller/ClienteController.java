@@ -3,6 +3,8 @@ package com.algaworks.algalog.api.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,12 +65,12 @@ public class ClienteController {
 	
 	@PostMapping("/clientes") //quando um metodo POST for solicitado nesta url, a funcao abaixo será executada
 	@ResponseStatus(HttpStatus.CREATED)
-	public Cliente adicionar(@RequestBody Cliente cliente) { //atribuir o corpo da requisicao a classe Modelo Cliente
+	public Cliente adicionar(@Valid @RequestBody Cliente cliente) { //atribuir o corpo da requisicao a classe Modelo Cliente
 		return clienteRepository.save(cliente);
 	}
 	
 	@PutMapping("/clientes/{clienteId}")
-	public ResponseEntity<Cliente> atualizar(@PathVariable Long clienteId, @RequestBody Cliente cliente){
+	public ResponseEntity<Cliente> atualizar(@Valid @PathVariable Long clienteId, @RequestBody Cliente cliente){
 		if (!clienteRepository.existsById(clienteId)) { //se o cliente nao existe
 			return ResponseEntity.notFound().build();	//retorna 404 not found	
 		}
