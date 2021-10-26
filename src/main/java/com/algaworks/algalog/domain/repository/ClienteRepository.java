@@ -20,4 +20,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long>{ //
 	
 	//Containing = 'like' no SQL, pesquisa nomes parecidos
 	List<Cliente> findByNomeContaining(String nome);
+	
+	
 }
