@@ -28,8 +28,8 @@ public class Cliente {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotBlank //anotacoes do Java Bean Validation 
-	@Size(max = 60)
+	@NotBlank //anotacoes do Java Bean Validation, verifica se o campo está vazio 
+	@Size(max = 60) //tamanho máximo
 	private String nome;
 	
 	@NotBlank

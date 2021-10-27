@@ -24,29 +24,29 @@ import com.algaworks.algalog.domain.repository.ClienteRepository;
 //o controller serve para direcionar o usuário para a função que ele solicitou.
 
 @RestController //dizendo ao Spring que esta classe é um controlador 
-//@RequestMapping("/clientes")
+@RequestMapping("/clientes") //todos GetMapping será "/clientes"
 public class ClienteController {
 	
 	@Autowired //injecao de dependencia
 	private ClienteRepository clienteRepository;
 		
-	@GetMapping("/clientes") //mapeamento, quando a requisição "/clientes" for solicitada, esta função será executada
+	@GetMapping //mapeamento, quando a requisição "/clientes" for solicitada, esta função será executada
 	public List<Cliente> listar() {
 		return clienteRepository.findAll();
 	}
 	
-	@GetMapping("/clientes/nome")
-	public List <Cliente> listarByNome() {
-		return clienteRepository.findByNome("João da Silva");
-	}
+//	@GetMapping("/{clienteNome}")
+//	public List <Cliente> listarByNome(@PathVariable String clienteNome) {		
+//		return clienteRepository.findByNome(clienteNome);
+//	}
 		
-	@GetMapping("/clientes/nome/like")
+	@GetMapping("/nome/like")
 	public List <Cliente> listarByNomeLike(){
 		return clienteRepository.findByNomeContaining("a");
 	}
 	
 	
-	@GetMapping("/clientes/{clienteId}")
+	@GetMapping("/{clienteId}")
 	public ResponseEntity<Cliente> buscar(@PathVariable Long clienteId) { //@PathVariable passa a variável da url para a variavel
 		//de parametro da funcao
 		
@@ -63,13 +63,13 @@ public class ClienteController {
 		return ResponseEntity.notFound().build();
 	}
 	
-	@PostMapping("/clientes") //quando um metodo POST for solicitado nesta url, a funcao abaixo será executada
+	@PostMapping //quando um metodo POST for solicitado nesta url, a funcao abaixo será executada
 	@ResponseStatus(HttpStatus.CREATED)
 	public Cliente adicionar(@Valid @RequestBody Cliente cliente) { //atribuir o corpo da requisicao a classe Modelo Cliente
 		return clienteRepository.save(cliente);
 	}
 	
-	@PutMapping("/clientes/{clienteId}")
+	@PutMapping("/{clienteId}")
 	public ResponseEntity<Cliente> atualizar(@Valid @PathVariable Long clienteId, @RequestBody Cliente cliente){
 		if (!clienteRepository.existsById(clienteId)) { //se o cliente nao existe
 			return ResponseEntity.notFound().build();	//retorna 404 not found	
@@ -80,7 +80,7 @@ public class ClienteController {
 		return ResponseEntity.ok(cliente);
 	}
 		
-	@DeleteMapping("/clientes/{clienteId}")
+	@DeleteMapping("/{clienteId}")
 	//retorna Void pq quando deleto o cliente nao quero visualizar o corpo dele
 	public ResponseEntity<Void> remover(@PathVariable Long clienteId){
 		if (!clienteRepository.existsById(clienteId)) {
