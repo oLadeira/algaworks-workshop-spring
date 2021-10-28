@@ -1,6 +1,7 @@
 package com.algaworks.algalog.domain.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -21,5 +22,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long>{ //
 	//Containing = 'like' no SQL, pesquisa nomes parecidos
 	List<Cliente> findByNomeContaining(String nome);
 	
+	//metodo usado no crudClienteService
+	Optional<Cliente>findByEmail(String email);
 	
 }

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algalog.domain.model.Cliente;
 import com.algaworks.algalog.domain.repository.ClienteRepository;
+import com.algaworks.algalog.domain.service.CrudClienteService;
 
 //o controller serve para direcionar o usuário para a função que ele solicitou.
 
@@ -29,6 +30,9 @@ public class ClienteController {
 	
 	@Autowired //injecao de dependencia
 	private ClienteRepository clienteRepository;
+	
+	@Autowired
+	private CrudClienteService crudClienteService; //classe onde fica todas as operacoes de crud do cliente (service)
 		
 	@GetMapping //mapeamento, quando a requisição "/clientes" for solicitada, esta função será executada
 	public List<Cliente> listar() {
@@ -66,7 +70,8 @@ public class ClienteController {
 	@PostMapping //quando um metodo POST for solicitado nesta url, a funcao abaixo será executada
 	@ResponseStatus(HttpStatus.CREATED)
 	public Cliente adicionar(@Valid @RequestBody Cliente cliente) { //atribuir o corpo da requisicao a classe Modelo Cliente
-		return clienteRepository.save(cliente);
+//		return clienteRepository.save(cliente);
+		return crudClienteService.salvar(cliente);
 	}
 	
 	@PutMapping("/{clienteId}")
@@ -75,7 +80,8 @@ public class ClienteController {
 			return ResponseEntity.notFound().build();	//retorna 404 not found	
 		}
 		cliente.setId(clienteId);
-		cliente = clienteRepository.save(cliente);
+//		cliente = clienteRepository.save(cliente);
+		cliente = crudClienteService.salvar(cliente);
 		
 		return ResponseEntity.ok(cliente);
 	}
@@ -86,7 +92,8 @@ public class ClienteController {
 		if (!clienteRepository.existsById(clienteId)) {
 			return ResponseEntity.notFound().build();		
 		}
-		clienteRepository.deleteById(clienteId);
+//		clienteRepository.deleteById(clienteId);
+		crudClienteService.excluir(clienteId);
 		
 		return ResponseEntity.noContent().build();
 	}

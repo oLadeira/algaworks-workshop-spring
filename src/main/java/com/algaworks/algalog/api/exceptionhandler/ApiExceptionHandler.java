@@ -14,8 +14,11 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import com.algaworks.algalog.domain.exception.DomainException;
 
 @ControllerAdvice //componente Spring com propósito de tratar excessões de forma global
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler{ //extende essa classe que ja faz a 
@@ -50,4 +53,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{ //exten
 		return handleExceptionInternal(ex, problema, headers, status, request);
 	}
 	
+	@ExceptionHandler(DomainException.class)
+	public ResponseEntity<Object> handleDomain(DomainException ex, WebRequest request){
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		
+		
+		Problema problema = new Problema();
+		problema.setStatus(status.value());
+		problema.setDataHora(LocalDateTime.now());
+		problema.setTitulo(ex.getMessage());
+		
+		
+		return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
+	}
 }
