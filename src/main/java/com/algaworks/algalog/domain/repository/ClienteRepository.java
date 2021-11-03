@@ -25,4 +25,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long>{ //
 	//metodo usado no crudClienteService
 	Optional<Cliente>findByEmail(String email);
 	
+	Optional<Cliente>findById(Long id);
+		
 }

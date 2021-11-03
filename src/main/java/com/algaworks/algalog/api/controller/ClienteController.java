@@ -1,7 +1,6 @@
 package com.algaworks.algalog.api.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algalog.domain.model.Cliente;
-import com.algaworks.algalog.domain.repository.ClienteRepository;
 import com.algaworks.algalog.domain.service.CrudClienteService;
 
 //o controller serve para direcionar o usuário para a função que ele solicitou.
@@ -27,74 +25,53 @@ import com.algaworks.algalog.domain.service.CrudClienteService;
 @RestController //dizendo ao Spring que esta classe é um controlador 
 @RequestMapping("/clientes") //todos GetMapping será "/clientes"
 public class ClienteController {
+
 	
-	@Autowired //injecao de dependencia
-	private ClienteRepository clienteRepository;
-	
-	@Autowired
+	@Autowired//injecao de dependencia
 	private CrudClienteService crudClienteService; //classe onde fica todas as operacoes de crud do cliente (service)
 		
+	
+	//GET//
 	@GetMapping //mapeamento, quando a requisição "/clientes" for solicitada, esta função será executada
 	public List<Cliente> listar() {
-		return clienteRepository.findAll();
+		return crudClienteService.listarAll();
 	}
 	
-//	@GetMapping("/{clienteNome}")
-//	public List <Cliente> listarByNome(@PathVariable String clienteNome) {		
-//		return clienteRepository.findByNome(clienteNome);
-//	}
 		
-	@GetMapping("/nome/like")
-	public List <Cliente> listarByNomeLike(){
-		return clienteRepository.findByNomeContaining("a");
+	@GetMapping("/nome/{clienteNome}")
+	public List <Cliente> listarByNomeLike(@PathVariable String clienteNome){
+		return crudClienteService.listarByNome(clienteNome);
 	}
 	
 	
 	@GetMapping("/{clienteId}")
 	public ResponseEntity<Cliente> buscar(@PathVariable Long clienteId) { //@PathVariable passa a variável da url para a variavel
-		//de parametro da funcao
-		
-		//Optional é um container que nele pode ter ou nao algum valor
-		Optional <Cliente> cliente = clienteRepository.findById(clienteId);
-		
-		//se dentro do Optional Cliente tem algo
-		if (cliente.isPresent()) {
-			//retorna uma resposta ok (200) e devolve o valor de cliente
-			return ResponseEntity.ok(cliente.get());
-		}
-		
-		//caso o optional nao possuir algum valor dentro dele, retorna notFound (404)
-		return ResponseEntity.notFound().build();
+		return crudClienteService.listarById(clienteId);
 	}
+	//FIM GET
 	
+	
+	
+	//POST//
 	@PostMapping //quando um metodo POST for solicitado nesta url, a funcao abaixo será executada
 	@ResponseStatus(HttpStatus.CREATED)
 	public Cliente adicionar(@Valid @RequestBody Cliente cliente) { //atribuir o corpo da requisicao a classe Modelo Cliente
-//		return clienteRepository.save(cliente);
 		return crudClienteService.salvar(cliente);
 	}
+	//FIM POST
+	
 	
 	@PutMapping("/{clienteId}")
-	public ResponseEntity<Cliente> atualizar(@Valid @PathVariable Long clienteId, @RequestBody Cliente cliente){
-		if (!clienteRepository.existsById(clienteId)) { //se o cliente nao existe
-			return ResponseEntity.notFound().build();	//retorna 404 not found	
-		}
-		cliente.setId(clienteId);
-//		cliente = clienteRepository.save(cliente);
-		cliente = crudClienteService.salvar(cliente);
-		
+	public ResponseEntity<Cliente> atualizar(@Valid @PathVariable Long clienteId, @RequestBody Cliente cliente){				
+		crudClienteService.atualizarCliente(clienteId, cliente);		
 		return ResponseEntity.ok(cliente);
 	}
 		
+	
 	@DeleteMapping("/{clienteId}")
 	//retorna Void pq quando deleto o cliente nao quero visualizar o corpo dele
-	public ResponseEntity<Void> remover(@PathVariable Long clienteId){
-		if (!clienteRepository.existsById(clienteId)) {
-			return ResponseEntity.notFound().build();		
-		}
-//		clienteRepository.deleteById(clienteId);
+	public ResponseEntity<Void> remover(@PathVariable Long clienteId){		
 		crudClienteService.excluir(clienteId);
-		
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.noContent().build();		
 	}
 }
